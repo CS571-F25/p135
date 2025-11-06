@@ -1,42 +1,61 @@
-#root {
-  max-width: 1280px;
+:root {
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: system-ui, sans-serif;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;  /* horizontal */
+  align-items: center;      /* vertical */
+  background: #0f172a;
+}
+
+.app {
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1.5rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.task-form input,
+.task-form select,
+.task-form button {
+  padding: 0.4rem 0.6rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.card {
-  padding: 2em;
+.cell {
+  border: 1px solid #1e293b;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  min-height: 160px;
 }
 
-.read-the-docs {
-  color: #888;
+.cell h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.cell ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.hint {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
 }

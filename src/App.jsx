@@ -34,7 +34,7 @@ function App() {
 
   return (
   <div className="app">
-      <h1>Eisenhower Matrix (PoC)</h1>
+      <h1>Eisenhower Matrix </h1>
       <form onSubmit={handleAdd} className="task-form">
         <input
           value={title}
@@ -84,9 +84,6 @@ function App() {
           </ul>
         </div>
       </div>
-      <p className="hint">
-        Next step: when user adds an IU task, show “you unlocked a low-priority task”.
-      </p>
     </div>
   )
 }
