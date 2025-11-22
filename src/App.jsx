@@ -1,91 +1,102 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-const QUADRANTS = {
-  IU: "Important + Urgent",
-  INU: "Important + Not Urgent",
-  NIU: "Not Important + Urgent",
-  NINU: "Not Important + Not Urgent",
-};
+import { useEffect, useMemo, useState } from "react";
+import { FaHome, FaCheck, FaClock } from "react-icons/fa";  // ⬅️ add FaClock
+import TimeTrackerScreen from "./Screens/TimeTrackerScreen"; // ⬅️ new import
+import { Routes, Route, NavLink } from "react-router-dom";
 
 
-function App() {
-    const [tasks, setTasks] = useState({
-    IU: [],
-    INU: [],
-    NIU: [],
-    NINU: [],});
+import HabitTracker, { DEFAULT_HABITS } from "./components/HabitTracker";
+import MatrixTodoScreen from "./Screens/MatrixTodoScreen";
+import Pomodoro from "./components/Pomodoro";
+import TodoList from "./components/TodoList";
 
-  const [title, setTitle] = useState("");
-  const [quad, setQuad] = useState("IU");
 
-  const handleAdd = (e) => {
-  e.preventDefault();
-  const trimmed = title.trim();
-  if (!trimmed) return;
-  setTasks((prev) => ({
-    ...prev,
-    [quad]: [...prev[quad], { id: Date.now(), title: trimmed }],
-  }));
-  setTitle("");
+
+function HomeScreen({ habitTotals, handleFocusComplete }) {
+  return (
+    <>
+    <header className="header">
+          <h2>Dashboard</h2>
+          <p className="muted">Top bar shows time spent by habit today</p>
+          <HabitTracker totals={habitTotals} />
+        </header>
+
+        <main className="main">
+          <div className="left">
+            <Pomodoro
+              habits={Object.keys(habitTotals)}
+              onFocusComplete={handleFocusComplete}
+            />
+          </div>
+          <div className="right">
+            <TodoList />
+          </div>
+        </main>
+      </>
+  );
+}
+
+export default function App() {
+  const [habitTotals, setHabitTotals] = useState(
+    Object.fromEntries(DEFAULT_HABITS.map((h) => [h, 0]))
+  );
+
+  const handleFocusComplete = (habit, minutes) => {
+    setHabitTotals((t) => ({ ...t, [habit]: (t[habit] || 0) + minutes }));
   };
 
   return (
-  <div className="app">
-      <h1>Eisenhower Matrix </h1>
-      <form onSubmit={handleAdd} className="task-form">
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. finish homework"
+    <div className="layout">
+      {/* Sidebar is always visible */}
+      <aside className="sidebar">
+        {/* Home */}
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            "toolIcon" + (isActive ? " active" : "")
+          }
+          title="Home"
+        >
+          <FaHome />
+        </NavLink>
+
+        {/* Matrix + Todo */}
+        <NavLink
+          to="/matrix"
+          className={({ isActive }) =>
+            "toolIcon" + (isActive ? " active" : "")
+          }
+          title="Tasks & Matrix"
+        >
+          <FaCheck />
+        </NavLink>
+
+        {/* Time Tracker */}
+        <NavLink
+          to="/tracker"
+          className={({ isActive }) =>
+            "toolIcon" + (isActive ? " active" : "")
+          }
+          title="Time Tracker"
+        >
+          <FaClock />
+        </NavLink>
+      </aside>
+
+      {/* Main routed content */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomeScreen
+              habitTotals={habitTotals}
+              handleFocusComplete={handleFocusComplete}
+            />
+          }
         />
-        <select value={quad} onChange={(e) => setQuad(e.target.value)}>
-          <option value="IU">Important + Urgent</option>
-          <option value="INU">Important + Not Urgent</option>
-          <option value="NIU">Not Important + Urgent</option>
-          <option value="NINU">Not Important + Not Urgent</option>
-        </select>
-        <button type="submit">Add</button>
-      </form>
-
-      <div className="matrix">
-        <div className="cell">
-          <h2>{QUADRANTS.IU}</h2>
-          <ul>
-            {tasks.IU.map((t) => (
-              <li key={t.id}>{t.title}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="cell">
-          <h2>{QUADRANTS.INU}</h2>
-          <ul>
-            {tasks.INU.map((t) => (
-              <li key={t.id}>{t.title}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="cell">
-          <h2>{QUADRANTS.NIU}</h2>
-          <ul>
-            {tasks.NIU.map((t) => (
-              <li key={t.id}>{t.title}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="cell">
-          <h2>{QUADRANTS.NINU}</h2>
-          <ul>
-            {tasks.NINU.map((t) => (
-              <li key={t.id}>{t.title}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
+        <Route path="/matrix" element={<MatrixTodoScreen />} />
+        <Route path="/tracker" element={<TimeTrackerScreen />} />
+      </Routes>
     </div>
-  )
-}
-
-export default App
+  );
+};
