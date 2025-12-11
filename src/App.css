@@ -43,7 +43,12 @@ body {
 }
 
 .toolIcon {
-  height: 28px; width: 28px;
+  display: flex;               /* NEW: make it a flex container */
+  align-items: center;         /* NEW: vertical center */
+  justify-content: center;     /* NEW: horizontal center */
+  width: 28px;
+  height: 28px;
+  padding: 0;                  /* NEW: kill extra padding */
   border-radius: 8px;
   background: #1f2937;
   border: 1px solid #293445;
@@ -157,7 +162,7 @@ input, select, button {
 .todo label { display: flex; gap: 8px; align-items: center; }
 .todo .done { text-decoration: line-through; color: var(--muted); }
 .icon {
-  background: var(--panel); border: 1px solid var(--border);
+  display: inline-flex; place-items: center;   background: var(--panel); border: 1px solid var(--border);
   color: #cbd5e1; width: 28px; height: 28px; border-radius: 6px;
 }
 html, body, #root {

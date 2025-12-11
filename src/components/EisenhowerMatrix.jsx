@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 
 const QUADRANTS = {
   IU: "Important + Urgent",
@@ -14,78 +14,40 @@ const PRIORITY_LABELS = {
   NINU: "P4",
 };
 
-export default function EisenhowerMatrix() {
-  const [tasks, setTasks] = useState({
+// 🔴 NOTE: no useState here.
+// We just read `todos` and `onDelete` from props.
+export default function EisenhowerMatrix({ todos, onDelete }) {
+  // group todos by quad
+  const byQuad = {
     IU: [],
     INU: [],
     NIU: [],
     NINU: [],
+  };
+
+  todos.forEach((t) => {
+    const q = t.quad || "IU"; // default if missing
+    if (byQuad[q]) byQuad[q].push(t);
   });
-
-  const [title, setTitle] = useState("");
-  const [quad, setQuad] = useState("IU");
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-    const trimmed = title.trim();
-    if (!trimmed) return;
-
-    setTasks((prev) => ({
-      ...prev,
-      [quad]: [...prev[quad], { id: Date.now(), title: trimmed }],
-    }));
-
-    setTitle("");
-  };
-
-  const handleDelete = (q, id) => {
-    setTasks((prev) => ({
-      ...prev,
-      [q]: prev[q].filter((t) => t.id !== id),
-    }));
-  };
 
   return (
     <>
       <h1>Eisenhower Matrix</h1>
 
-      {/* Input Form */}
-      <form onSubmit={handleAdd} className="task-form" style={styles.form}> 
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. Finish homework"
-          style={styles.input}                                             
-        />
-        <select
-          value={quad}
-          onChange={(e) => setQuad(e.target.value)}
-          style={styles.input}                                             
-        >
-          {Object.entries(QUADRANTS).map(([key, label]) => (
-            <option key={key} value={key}>
-              {PRIORITY_LABELS[key]} – {label}
-            </option>
-          ))}
-        </select>
-        <button type="submit" style={styles.button}>Add</button>           
-      </form>
-
-      {/* Matrix */}
-      <div className="matrix" style={styles.matrix}>                       
+      <div className="matrix" style={styles.matrix}>
         {Object.entries(QUADRANTS).map(([key, label]) => (
-          <div className="cell" key={key} style={styles.cell}>            
+          <div className="cell" key={key} style={styles.cell}>
             <h2>
               {PRIORITY_LABELS[key]} – {label}
             </h2>
-            <ul style={styles.ul}>                                        
-              {tasks[key].map((t) => (
-                <li key={t.id} style={styles.li}>                         
-                  {t.title}
+            <ul style={styles.ul}>
+              {byQuad[key].map((t) => (
+                <li key={t.id} style={styles.li}>
+                  {t.text}
                   <button
                     className="del"
-                    onClick={() => handleDelete(key, t.id)}
-                    style={styles.del}                                    
+                    onClick={() => onDelete(t.id)}
+                    style={styles.del}
                   >
                     ×
                   </button>
@@ -99,7 +61,6 @@ export default function EisenhowerMatrix() {
   );
 }
 
-// your styles object stays exactly as you wrote it
 const styles = {
   matrix: {
     display: "grid",

@@ -1,7 +1,13 @@
-import EisenhowerMatrix from "../components/EisenhowerMatrix"; // adjust path if needed
-import TodoList from "../components/TodoList";
 
-export default function MatrixTodoScreen() {
+import TodoList from "../components/TodoList";
+import EisenhowerMatrix from "../components/EisenhowerMatrix";
+
+export default function MatrixTodoScreen({
+  todos,
+  addTodo,
+  toggleTodo,
+  removeTodo,
+}) {
   return (
     <>
       <header className="header">
@@ -13,10 +19,17 @@ export default function MatrixTodoScreen() {
 
       <main className="main">
         <div className="left">
-          <EisenhowerMatrix />
+          <EisenhowerMatrix 
+            todos={todos}      
+            onDelete={removeTodo}  />
         </div>
         <div className="right">
-          <TodoList />
+          <TodoList
+            items={todos}
+            onAdd={addTodo} 
+            onToggle={toggleTodo}
+            onRemove={removeTodo}
+          />
         </div>
       </main>
     </>
