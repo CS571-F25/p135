@@ -105,7 +105,8 @@ const addTodo = ({ text, quad = "IU" }) => {
             />
           }
         />
-        <Route path="/matrix" element={<MatrixTodoScreen todos={todos}
+        <Route path="/matrix" element={<MatrixTodoScreen 
+        todos={todos}
         addTodo={addTodo}
         toggleTodo={toggleTodo}
         removeTodo={removeTodo} />} />
